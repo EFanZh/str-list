@@ -211,9 +211,7 @@ impl<'a> Iterator for IterMut<'a> {
     type Item = &'a mut str;
 
     fn next(&mut self) -> Option<Self::Item> {
-        let inner = mem::replace(&mut self.inner, unsafe {
-            StrList::from_bytes_unchecked_mut(&mut [])
-        });
+        let inner = mem::take(&mut self.inner);
 
         inner.split_first_mut().map(|(first, rest)| {
             self.inner = rest;
@@ -225,9 +223,7 @@ impl<'a> Iterator for IterMut<'a> {
 
 impl<'a> DoubleEndedIterator for IterMut<'a> {
     fn next_back(&mut self) -> Option<Self::Item> {
-        let inner = mem::replace(&mut self.inner, unsafe {
-            StrList::from_bytes_unchecked_mut(&mut [])
-        });
+        let inner = mem::take(&mut self.inner);
 
         inner.split_last_mut().map(|(last, rest)| {
             self.inner = rest;
